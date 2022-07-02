@@ -6,99 +6,94 @@ function Book(name, authour, type) {
     this.authour = authour;
     this.type = type;
 }
-//show constructor
-function Show(){
+//show function
+function Show() {
 
-    let  books = localStorage.getItem('books');
-    if(books == null){
+    let books = localStorage.getItem('books');
+    if (books == null) {
         booksObj = [];
-    }else{
+    } else {
         booksObj = JSON.parse(books);
     }
     let elementData = "";
- 
-    booksObj.forEach((element,index) => {
+
+    booksObj.forEach((element, index) => {
         // console.log(element)
-     elementData += `<tr>
+        elementData += `<tr>
                         <td>${index}</td>
                         <td>${element.name}</td>
                         <td>${element.authour}</td>
                         <td>${element.type}</td>
-                        <td></td>
+                        <td><button onclick="deleteBook(${index})" class="btn btn-danger">Delete</button></td>
 
                     </tr>`
-    // tableBody.innerHTML += elementData;   
-});        
-let tableBody = document.getElementById('tablebody')
-    if(tableBody != 0){
+    });
+    let tableBody = document.getElementById('tablebody')
+    if (tableBody != 0) {
         tableBody.innerHTML = elementData;
-    }else{
+    } else {
         tableBody.innerHTML = `Type your Notes`
-    }     
+    }
 
+}
+//Adding action to delete button
+let deleteBook = (index) => {
+    let books = localStorage.getItem('books');
+    if (books == null) {
+        booksObj = [];
+    } else {
+        booksObj = JSON.parse(books);
+    }
+    console.log(booksObj)
+    booksObj.splice(index, 1);
+    localStorage.setItem("books", JSON.stringify(booksObj));
+    Show();
 }
 //Constructor display
 function Display() {
 
 }
 //Prototypes
-//Implementin add function
-Display.prototype.add = function (book) {
-    
-    let  books = localStorage.getItem('books');
-    if(books == null){
-        booksObj = [];
-    }else{
-        booksObj = JSON.parse(books);
-    }
-    let elementData = "";
- 
-    booksObj.forEach((element,index) => {
-        // console.log(element)
-     elementData += `<tr>
-                        <td>${index}</td>
-                        <td>${element.name}</td>
-                        <td>${element.authour}</td>
-                        <td>${element.type}</td>
-                    </tr>`
-    // tableBody.innerHTML += elementData;   
-});        
-let tableBody = document.getElementById('tablebody')
-    if(tableBody != 0){
-        tableBody.innerHTML = elementData;
-    }else{
-        tableBody.innerHTML = `Type your Notes`
-    }     
-}
+
 //Implementing clear function
-Display.prototype.clear = function(){
+Display.prototype.clear = function () {
     let libraryform = document.getElementById('libraryform');
     libraryform.reset();
-    
+
 }
 //Implementing validate function
 Display.prototype.validate = function (book) {
-    //    console.log(book.name.length)
-    if(book.name.length < 2 || book.authour.length < 2) {
+    if (book.name.length < 2 || book.authour.length < 2) {
         return false;
-    }else {
-        
+    } else {
+
         return true;
     }
+}
+//Implementing error function
+Display.prototype.error = (type, msg) => {
+    let message = document.getElementById('message');
+    message.innerHTML += `<div class="alert alert-${type}" role="alert">
+    This is a ${msg} alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.
+  </div>`;
+
+    setTimeout(() => {
+        message.innerHTML = '';
+    }, 2000);
 }
 
 let libraryform = document.getElementById('libraryform');
 
-let libraryformSubmit = (e)=> {
-    
+let libraryformSubmit = (e) => {
+
     let name = document.getElementById('name').value;
     let authour = document.getElementById('authour').value;
     let type;
     let scifi = document.getElementById('scifi');
     let fantasy = document.getElementById('fantasy');
     let thriller = document.getElementById('thirller');
-    let  books = localStorage.getItem('books');
-
+    let books = localStorage.getItem('books');
+    //To check which checkbox is clicked
     if (scifi.checked) {
         type = scifi.value;
     } else if (fantasy.checked) {
@@ -106,28 +101,27 @@ let libraryformSubmit = (e)=> {
     } else if (thriller.checked) {
         type = thriller.value;
     }
-
-    if(books == null){
+    //Creating an array of bookObj
+    if (books == null) {
         booksObj = [];
-    }else{
+    } else {
         booksObj = JSON.parse(books);
     }
-    
-    let book = new Book(name , authour, type);
-    // console.log(booksObj)
-    
-    
+    //Creating an object of constructor book    
+    let book = new Book(name, authour, type);
+
     let display = new Display();
-    
-    if (display.validate(book) ){
-        // console.log(book)
+    //Checking the validation   
+    if (display.validate(book)) {
+
         booksObj.push(book);
-        localStorage.setItem("books",JSON.stringify(booksObj));
-        display.add(book);
+        localStorage.setItem("books", JSON.stringify(booksObj));
+        Show();
         display.clear();
-    }else{
-        alert("erer")
-        console.log('hi');
+        display.error('success', 'Sucessfully');
+    } else {
+
+        display.error('danger', 'Error');
     }
     e.preventDefault();
 }
