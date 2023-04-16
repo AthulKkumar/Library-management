@@ -25,3 +25,8 @@ git commit -m "Description of changes made"
 ```bash
 git push origin master
 ```
+
+## Contributors
+
+- [Sudit Kumar Jha](https://github.com/SuditJha)
+- [Athul K Kumar](https://github.com/AthulKkumar)
